@@ -10,12 +10,14 @@ install_nginx() {
     sudo systemctl start nginx
     echo "Enabling Nginx to start on boot..."
     sudo systemctl enable nginx
+    echo "✅ Nginx installed and started."
 }
 
 # Function to configure UFW
 configure_ufw() {
     echo "Configuring UFW to allow HTTP and HTTPS traffic..."
     sudo ufw allow 'Nginx Full'
+    echo "✅ UFW configured."
 }
 
 # Function to install Docker
@@ -38,6 +40,7 @@ install_docker() {
     sudo systemctl enable docker
     echo "Adding your user to the Docker group..."
     sudo usermod -aG docker $USER
+    echo "✅ Docker installed."
 }
 
 # Function to configure Docker log rotation
@@ -54,7 +57,14 @@ configure_docker_logs() {
 EOF
     echo "Restarting Docker to apply log config..."
     sudo systemctl restart docker
-    echo "Docker log rotation configured (max 50MB x 5 files = 250MB per container)."
+    echo "✅ Docker log rotation configured (max 50MB x 5 files = 250MB per container)."
+}
+
+# Function to setup Docker maintenance (weekly image cleanup)
+configure_docker_maintenance() {
+    echo "Setting up weekly Docker image cleanup..."
+    (sudo crontab -l 2>/dev/null; echo "0 3 * * 0 docker image prune -a -f >> /var/log/docker-prune.log 2>&1") | sudo crontab -
+    echo "✅ Weekly Docker cleanup scheduled (every Sunday at 3am)."
 }
 
 # Main script execution
@@ -62,6 +72,8 @@ install_nginx
 configure_ufw
 install_docker
 configure_docker_logs
+configure_docker_maintenance
 
-echo "✅ Nginx, UFW, and Docker installation completed!"
-echo "⚠️  You may need to log out and back in for Docker group changes to take effect."
+echo ""
+echo "🎉 Setup complete! Nginx, UFW, and Docker are ready."
+echo "⚠️  Log out and back in for Docker group changes to take effect."
