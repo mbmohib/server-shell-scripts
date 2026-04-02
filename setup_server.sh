@@ -63,7 +63,7 @@ EOF
 # Function to setup Docker maintenance (weekly image cleanup)
 configure_docker_maintenance() {
     echo "Setting up weekly Docker image cleanup..."
-    (sudo crontab -l 2>/dev/null; echo "0 3 * * 0 docker image prune -a -f >> /var/log/docker-prune.log 2>&1") | sudo crontab -
+    (sudo crontab -l 2>/dev/null; echo "0 22 * * 0 docker system prune -a -f >> /var/log/docker-prune.log 2>&1") | sudo crontab -
     echo "✅ Weekly Docker cleanup scheduled (every Sunday at 3am)."
 }
 

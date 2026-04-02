@@ -55,7 +55,7 @@ Check Docker disk usage
 `docker system df`
 
 Remove all unused container and images
-`docker system prune`
+`docker system prune -a -f`
 
 Check container ports
 `docker container port [containter name]`
